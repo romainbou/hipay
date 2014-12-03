@@ -1,21 +1,29 @@
-require 'savon'
-
 module Hipay
   class Client
-    def initialize opts
+
+    def initialize opts = {}
       @options = opts.with_indifferent_access
-      @client = Savon.client wsdl: @options.delete(:wsdl)
+      @clients = {}
     end
-    def call method, params, opts= {}, &block
-      response = @client.call method, opts.update(:message => { :parameters => @options.merge(params)}), &block
-      hash = response.body[:"#{method}_response"][:"#{method}_result"].with_indifferent_access
-      code = hash.delete(:code).to_i
-      if code > 0
-        raise Error.new "Code #{code} : #{hash[:description]}"
-      else
-        hash
-      end
+
+    def user_account namespace = 'user-account-v2'
+      @clients[:user_account] ||= SOAP.new resource_options(namespace)
     end
-    class Error < StandardError; end
+
+    def transfer namespace = 'transfer'
+      @clients[:transfer] ||= SOAP.new resource_options(namespace)
+    end
+
+    def withdrawal namespace = 'withdrawal'
+      @clients[:withdrawal] ||= SOAP.new resource_options(namespace)
+    end
+
+    private
+
+    def resource_options namespace
+      opts = @options.dup
+      opts[:wsdl] = File.join opts.delete(:base_url), "#{namespace}?wsdl"
+      opts
+    end
   end
 end

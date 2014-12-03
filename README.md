@@ -23,23 +23,49 @@ Refer to the hipay documentation for each client specific usage and endpoints
 ### Cash out client (SOAP)
 
 ```ruby
-client = Hipay::Client.new wsdl: "https://#{base_url}/soap/user-account-v2?wsdl",
+client = Hipay::Client.new base_url: "https://#{base_url}/soap",
    wsLogin: "my_login",
    wsPassword: "my_password",
    entity: "my_entity"
 
-client.call :is_available, email: 'test_test@gmail.com'
+client.user_account.operations
+=> [:send_activation_mail,
+ :create,
+ :create_with_website,
+ :create_full_user_account,
+ :is_available,
+ :get_available_payment_methods,
+ :get_balance,
+ :get_transactions,
+ :bank_infos_check,
+ :bank_infos_fields,
+ :bank_infos_status,
+ :bank_infos_register,
+ :get_account_infos,
+ :associate_merchant_group,
+ :create_subaccount,
+ :set_merchant_notification_in_post,
+ :set_merchant_token_in_notification]
+
+client.transfer.operations
+=> [:direct]
+
+client.withdrawal.operations
+=> [:create]
+
+client.user_account.call :is_available, email: 'test_test@gmail.com'
+=> {"description"=>"Email available : test_test@gmail.com", "is_available"=>true}
 
 ```
 
 ### TPP client (REST)
 
 ```ruby
-tpp = Hipay::TPP.new  url: "https://#{base_url}/rest/v1/",
-    username: "my_login",
-    password: 'my_password'
+tpp_client = Hipay::Client::TPP.new    url: "https://#{base_url}/rest/v1/",
+                                username: "my_login",
+                                password: 'my_password'
 
-tpp.get("/order/#{order_id}")
+tpp_client.get("/orders/#{order_id}")
 ```
 
 
