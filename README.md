@@ -22,8 +22,9 @@ Refer to the hipay documentation for each client specific usage and endpoints
 
 ### Cash out client (SOAP)
 
+
 ```ruby
-client = Hipay::Client.new base_url: "https://#{base_url}/soap",
+client = Hipay::Client.new base_url: "https://test-ws.hipay.com/soap",
    wsLogin: "my_login",
    wsPassword: "my_password",
    entity: "my_entity"
@@ -52,7 +53,13 @@ client.transfer.operations
 
 client.withdrawal.operations
 => [:create]
+```
 
+The client
+* camelize the method name and the params before to call the hipay webservice
+* extract the response from its enveloppe, hashify the xml returned, and underscorize the result
+
+```ruby
 client.user_account.call :is_available, email: 'test_test@gmail.com'
 => {"description"=>"Email available : test_test@gmail.com", "is_available"=>true}
 
