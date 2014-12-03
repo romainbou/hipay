@@ -18,6 +18,10 @@ Or install it yourself as:
 
 ## Usage
 
+Refer to the hipay documentation for each client specific usages and endpoints
+
+### Cash out client (SOAP)
+
 ```ruby
 client = Hipay::Client.new wsdl: "https://#{base_url}/soap/user-account-v2?wsdl",
    wsLogin: "my_login",
@@ -32,6 +36,17 @@ tpp = Hipay::TPP.new  url: "https://#{base_url}/rest/v1/",
 
 tpp.get("/order/#{order_id}")
 ```
+
+### TPP client (REST)
+
+```ruby
+tpp = Hipay::TPP.new  url: "https://#{base_url}/rest/v1/",
+    username: "my_login",
+    password: 'my_password'
+
+tpp.get("/order/#{order_id}")
+```
+
 
 ## Contributing
 
