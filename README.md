@@ -1,6 +1,6 @@
 # Hipay
 
-Provide Cash Out and TPP integration client
+Provide Cash Out and TPP integration clients
 
 ## Installation
 
@@ -24,7 +24,13 @@ client = Hipay::Client.new wsdl: "https://#{base_url}/soap/user-account-v2?wsdl"
    wsPassword: "my_password",
    entity: "my_entity"
 
-client.call :is_available, email: 'nicolas.papon@gmail.com'
+client.call :is_available, email: 'test_test@gmail.com'
+
+tpp = Hipay::TPP.new  url: "https://#{base_url}/rest/v1/",
+    username: "my_login",
+    password: 'my_password'
+
+tpp.get("/order/#{order_id}")
 ```
 
 ## Contributing
