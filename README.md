@@ -55,14 +55,19 @@ client.withdrawal.operations
 => [:create]
 ```
 
-The client
-* camelize the method name and the params before to call the hipay webservice
-* extract the response from its enveloppe, hashify the xml returned, and underscorize the result
+
+Before to call the hipay webservice, the method name and the params passed to the client are camelized
+The response is then extracted from its enveloppe, hashified and underscorized
 
 ```ruby
 client.user_account.call :is_available, email: 'test_test@gmail.com'
 => {"description"=>"Email available : test_test@gmail.com", "is_available"=>true}
+```
 
+On Hipay webservice error, raise a Hipay::Client::SOAP::Error exception
+```ruby
+client.user_account.call :is_available, email: ''
+=> Hipay::Client::SOAP::Error: Code 3 : invalid parameter email
 ```
 
 ### TPP client (REST)
