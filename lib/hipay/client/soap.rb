@@ -11,13 +11,24 @@ module Hipay
 
       def call method, params, opts= {}, &block
         response = @client.call method, opts.update(:message => { :parameters => @options.merge(params)}), &block
-        hash = response.body[:"#{method}_response"][:"#{method}_result"].with_indifferent_access
+        hash = parse_response response, method
         code = hash.delete(:code).to_i
         if code > 0
           raise Error.new "Code #{code} : #{hash[:description]}"
         else
           hash
         end
+      end
+
+      def parse_response response, method
+        response.body[:"#{method}_response"][:"#{method}_result"].with_indifferent_access
+      rescue Exception => e
+        # binding.pry
+        raise e
+      end
+
+      def build_request method, params, opts= {}, &block
+        @client.build_request method, opts.update(:message => { :parameters => @options.merge(params)}), &block
       end
 
       def method_missing name, *params, &block
