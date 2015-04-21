@@ -1,4 +1,5 @@
 require 'savon'
+require 'digest'
 
 module Hipay
   class Client
@@ -39,7 +40,23 @@ module Hipay
         end
       end
 
+      def check_response xml, &block
+        hash = Hash.from_xml(xml.gsub(/(\n|\t)+\s*/,'')).with_indifferent_access
+
+        unless hash[:notification][:md5content] == Digest::MD5.hexdigest([xml.match(/<result>.*<\/result>/m)[0], @options[:wsPassword]].join)
+          raise BadChecksumError, hash
+        end
+
+        if block
+          block.call(hash[:notification][:result])
+        else
+          true
+        end
+
+      end
+
       class Error < StandardError; end
+      class BadChecksumError < Error; end
 
     end
   end
