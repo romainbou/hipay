@@ -40,10 +40,14 @@ module Hipay
         end
       end
 
-      def check_response xml, &block
+      def check_response xml, opts = {}, &block
         hash = Hash.from_xml(xml.gsub(/(\n|\t)+\s*/,'')).with_indifferent_access
 
-        unless hash[:notification][:md5content] == Digest::MD5.hexdigest([xml.match(/<result>.*<\/result>/m)[0], @options[:wsPassword]].join)
+        md5_base = []
+        md5_base << xml.match(/<result>.*<\/result>/m)[0]
+        md5_base <<  @options[:wsPassword] unless opts.with_indifferent_access.key?(:content_only)
+
+        unless hash[:notification][:md5content] == Digest::MD5.hexdigest(md5_base.join)
           raise BadChecksumError, hash
         end
 
