@@ -18,8 +18,8 @@ module Hipay
       @clients[:withdrawal] ||= SOAP.new resource_options(namespace)
     end
 
-    def check_response *args
-      user_account.check_response *args
+    def check_response *args, &block
+      user_account.check_response *args, &block
     end
 
     private

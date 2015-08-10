@@ -51,7 +51,7 @@ module Hipay
           raise BadChecksumError, hash
         end
 
-        if block
+        if block_given?
           block.call(hash[:notification][:result])
         else
           true
